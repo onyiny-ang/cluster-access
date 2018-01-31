@@ -16,7 +16,7 @@ A prototype tool to allow a cluster in a cluster registry to be easily added or 
       -h, --help            Displays this usage"
       -v, --verbose         Increase verbosity for debugging"
       -l, --kube-location   Indicate location of kube config file"
-      -n, --namespace  creates an entry for the specified cluster in KUBECONFIG"
+      -n, --namespace       Namespace for specified cluster"
 ```
 See the [example](https://github.com/onyiny-ang/cluster-access/blob/master/example.md) for instructions on setting up
 

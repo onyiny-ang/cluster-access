@@ -15,17 +15,17 @@
 function usage {
   echo "Usage: '$'$0  [command] [- | -- ][arguments]"
   echo "  Commands:"
-  echo "    create    creates an entry for a specified cluster, context and user in KUBECONFIG (requires -k, -c, -u flags)"
+  echo "    create    Creates an entry for a specified cluster, context and user in KUBECONFIG (requires -k, -c, -u flags)"
   echo "    delete    deletes an entry for the specified cluster in KUBECONFIG (requires -c)"
   echo "  Required arguments:"
-  echo "    -c, --cluster-name    specifies the desired cluster to be created/deleted name in KUBECONFIG"
-  echo "    -k, --kubeconfig-entry-context  creates an entry for the specified cluster in KUBECONFIG"
-  echo "    -u, --user    creates an entry for the specified cluster in KUBECONFIG"
+  echo "    -c, --cluster-name    Cluster to be created/deleted name in KUBECONFIG"
+  echo "    -k, --kube-context    Existing context where cluster-registry and cluster exist"
+  echo "    -u, --user            User name for credential creation"
   echo "  Optional Arguments:"
   echo "    -h, --help             Display this usage"
   echo "    -v, --verbose          Increase verbosity for debugging"
   echo "    -l, --kube-location    Indicate location of kube config file"
-  echo "    -n, --namespace  creates an entry for the specified cluster in KUBECONFIG"
+  echo "    -n, --namespace        Namespace for specified cluster"
 }
 
 function parse_args {
@@ -74,7 +74,7 @@ function parse_args {
       else
         while [[ ${CREATE} && $# -gt 1 ]]; do
           case "${1}" in
-              -k|--kubeconfig-entry-context)
+              -k|--kube-context)
                   CONTEXT="${2}"
                   (( req_arg_count += 1 ))
                   shift
