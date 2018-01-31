@@ -163,7 +163,7 @@ function action {
 
 function create_kubeentry {
 
-SERVER="$(kubectl config view --flatten -o json | jq -r --arg CONTEXT "$CONTEXT" '.clusters[] | select(.name==$CONTEXT)| .cluster.server')"
+SERVER="$(kubectl get clusters ${CLUSTER} -o json | jq -r '.spec.kubernetesApiEndpoints.serverEndpoints[].serverAddress')"
 
 KUBE_CA="$(kubectl config view -o json | jq -r --arg CONTEXT "$CONTEXT" '.clusters[] | select(.name==$CONTEXT)| .cluster | .["certificate-authority"]')"
 
