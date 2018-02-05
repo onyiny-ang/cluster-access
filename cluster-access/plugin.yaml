@@ -1,0 +1,36 @@
+name: "cluster-access"
+shortDesc: "Access clusters in a cluster registry"
+longDesc: >
+  Access clusters in a cluster in a cluster registry.
+example: "./cluster-access.sh -k minikube -c test-cluster1 -u tester"
+command: ./cluster-access.sh
+tree:
+- name: create
+  shortDesc:  Cluster to be created/deleted name in KUBECONFIG
+  command: ./cluster-access.sh create
+  flags:
+  - name: cluster-name
+    shorthand: c
+    desc: Cluster to be created/deleted name in KUBECONFIG
+  - name: kube-context
+    shorthand: k
+    desc: Existing context where cluster-registry and cluster exist
+  - name: user
+    shorthand: u
+    desc: User name for credential creation
+  - name: kube-location
+    shorthand: l
+    desc: Indicate location of kube config file
+  - name: namespace
+    shorthand: p
+    desc: Namespace for specified cluster
+- name: delete
+  shortDesc: deletes an entry for the specified cluster in KUBECONFIG (requires -c)
+  command: ./cluster-access.sh delete
+  flags:
+  - name: cluster-name
+    shorthand: c
+    desc: Cluster to be created/deleted name in KUBECONFIG
+  - name: kube-location
+    shorthand: l
+    desc: Indicate location of kube config file
