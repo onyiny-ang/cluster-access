@@ -18,7 +18,7 @@ function usage {
   echo "    create    Creates an entry for a specified cluster, context and user in KUBECONFIG (requires -k, -c, -u flags)"
   echo "    delete    deletes an entry for the specified cluster in KUBECONFIG (requires -c)"
   echo "  Required arguments:"
-  echo "    -c, --cluster-name    Cluster to be created/deleted name in KUBECONFIG"
+  echo "    -c, --cluster-name    Name of the cluster to be created/deleted in KUBECONFIG"
   echo "    -k, --kube-context    Existing context where cluster-registry and cluster exist"
   echo "    -u, --user            User name for credential creation"
   echo "  Optional Arguments:"
