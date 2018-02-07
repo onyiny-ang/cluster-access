@@ -4,6 +4,9 @@ import (
 	"flag"
 	"io"
 
+	"k8s.io/cluster-access/pkg/access/create"
+	"k8s.io/cluster-access/pkg/access/delete"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )

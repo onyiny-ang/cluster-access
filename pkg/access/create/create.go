@@ -33,5 +33,5 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 	cmd.Flags().String("user", "", "User name for credential creation")
 	cmd.Flags().String("kube-location", home+"/.kube/config", "Indicate location of kube config fil")
 	cmd.Flags().String("namespace", "", "Namespace for specified cluster")
-
+	return cmd
 }
