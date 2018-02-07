@@ -5,18 +5,18 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"k8s.io/client-go/util/homedir"
 	"k8s.io/kubernetes/pkg/kubectl/cmd/templates"
 	cmdutil "k8s.io/kubernetes/pkg/kubectl/cmd/util"
-	"k8s.io/kubernetes/pkg/kubectl/util/i18n"
 )
 
 var (
 	createLong = templates.LongDesc(`Creates an entry for the specified cluster-registry cluster from KUBECONFIG (requires -c)`)
 
-	createExample = templates.Examples(i18n.T(`
+	createExample = templates.Examples(`
 	#Create an entry in kubeconfig for cluster-registry cluster "test-cluster1" existing in the minikube context
 	cluster-access create cluster-name=test-cluster1 kube-context=minikube user=tester
-	`))
+	`)
 )
 
 func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
@@ -28,7 +28,12 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 		Example: createExample,
 	}
 
+	home := homedir.HomeDir()
 	cmdutil.AddPrinterFlags(cmd)
-	cmd.Flags().String("cluster-name", "", i18n.T("Name of the cluster to be created/deleted in KUBECONFIG"))
+	cmd.Flags().String("cluster-name", "", "Name of the cluster to be created/deleted in KUBECONFIG")
+	cmd.Flags().String("kube-context", "", "Existing context where cluster-registry and cluster exist")
+	cmd.Flags().String("user", "", "User name for credential creation")
+	cmd.Flags().String("kube-location", home+"/.kube/config", "Indicate location of kube config fil")
+	cmd.Flags().String("namespace", "", "Namespace for specified cluster")
 
 }
