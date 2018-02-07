@@ -8,6 +8,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/fake"
+	"k8s.io/client-go/util/homedir"
 )
 
 func main() {
@@ -63,8 +64,12 @@ func main() {
 			os.Exit(1)
 		}
 		if *createLocation == "" {
-			createCommand.Set(createLocation, "Look for this in cluster registry")
+			home := homedir.HomeDir()
+			createCommand.Set(*createLocation, home+"/.kube/config")
 		}
+
+		fmt.Printf("%s", *createNamespace)
+
 	}
 
 	if deleteCommand.Parsed() {
@@ -72,6 +77,11 @@ func main() {
 			deleteCommand.PrintDefaults()
 			os.Exit(1)
 		}
+		if *deleteLocation == "" {
+			home := homedir.HomeDir()
+			createCommand.Set(*deleteLocation, home+"/.kube/config")
+		}
+
 	}
 
 	os.Exit(1)
