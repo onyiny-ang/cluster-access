@@ -6,7 +6,7 @@ go_library(
     importpath = "k8s.io/cluster-access/pkg/access/delete",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/access/options:go_default_library",
         "//vendor/github.com/spf13/cobra:go_default_library",
-        "//vendor/k8s.io/client-go/util/homedir:go_default_library",
     ],
 )

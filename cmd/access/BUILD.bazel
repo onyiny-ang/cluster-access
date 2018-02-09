@@ -5,15 +5,11 @@ go_library(
     srcs = ["access.go"],
     importpath = "k8s.io/cluster-access/cmd/access",
     visibility = ["//visibility:private"],
-    deps = [
-        "//pkg/access:go_default_library",
-        "//vendor/k8s.io/apiserver/pkg/util/logs:go_default_library",
-    ],
+    deps = ["//pkg/access:go_default_library"],
 )
 
 go_binary(
     name = "access",
-    importpath = "k8s.io/cluster-access/cmd/access",
-    library = ":go_default_library",
+    embed = [":go_default_library"],
     visibility = ["//visibility:public"],
 )

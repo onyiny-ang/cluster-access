@@ -11,7 +11,6 @@ go_test(
     srcs = ["wait_test.go"],
     embed = [":go_default_library"],
     importpath = "k8s.io/apimachinery/pkg/util/wait",
-    library = ":go_default_library",
     deps = ["//vendor/k8s.io/apimachinery/pkg/util/runtime:go_default_library"],
 )
 
