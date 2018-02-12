@@ -6,38 +6,31 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 )
 
 var (
-	home        = homedir.HomeDir()
-	kubeDefault = home + "/.kube/config"
+	home         = homedir.HomeDir()
+	kubeDefault  = home + "/.kube/config"
+	kubeUsage    = "Path to the kubeconfig file to use for CLI requests."
+	clusterUsage = "Name of the cluster which will be added to/delete  d from the kubeconfig file."
 )
 
 type SubcommandOptions struct {
 	ClusterName  string
-	KubeContext  string
-	User         string
-	Namespace    string
 	KubeLocation string
 }
 
 // BindCommon adds the common options that are shared by different
-// sub-commands to the list of flagsp.
+// sub-commands to the list of flags.
 func (o *SubcommandOptions) BindCommon(flags *pflag.FlagSet) {
-	flags.StringVar(&o.KubeLocation, "kubeconfig", kubeDefault,
-		"Path to the kubeconfig file to use for CLI requests.")
-	flags.StringVar(&o.ClusterName, "cluster-access-context", "",
-		"Name of the cluster which will be added to/deleted from the kubeconfig file.")
-	flags.StringVar(&o.Namespace, "cluster-namespace",
-		"",
-		"Namespace to be created in the cluster being added to kubeconfig")
-	flags.StringVar(&o.User, "user", "admin",
-		"User to be used to authorize use of the cluster.")
-	flags.StringVar(&o.KubeContext, "context", "",
-		"The context from which the cluster is created is used for demonstrative purposes.")
+	flags.StringVarP(&o.KubeLocation, "kubeconfig", "k", kubeDefault, kubeUsage)
+	flags.StringVarP(&o.ClusterName, "cluster-name", "c", "", clusterUsage)
+	viper.BindPFlag("kubeconfig", flags.Lookup("kubeconfig"))
+	viper.BindPFlag("cluster-name", flags.Lookup("cluster-name"))
 }
 
 // UpdateKubeconfig handles updating the kubeconfig by building up the endpoint

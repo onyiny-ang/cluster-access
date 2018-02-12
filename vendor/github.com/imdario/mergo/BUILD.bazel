@@ -24,7 +24,6 @@ go_test(
         "merge_test.go",
         "mergo_test.go",
     ],
-    data = glob(["testdata/**"]),
     embed = [":go_default_library"],
     deps = ["//vendor/gopkg.in/yaml.v2:go_default_library"],
 )

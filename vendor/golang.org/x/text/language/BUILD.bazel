@@ -30,7 +30,6 @@ go_test(
         "match_test.go",
         "parse_test.go",
     ],
-    data = glob(["testdata/**"]),
     embed = [":go_default_library"],
     deps = [
         "//vendor/golang.org/x/text/internal/tag:go_default_library",
@@ -45,6 +44,5 @@ go_test(
         "examples_test.go",
         "httpexample_test.go",
     ],
-    data = glob(["testdata/**"]),
     deps = [":go_default_library"],
 )
