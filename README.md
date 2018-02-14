@@ -20,3 +20,6 @@ A prototype tool to allow a cluster in a cluster registry to be easily added or 
 ```
 See the [example](https://github.com/onyiny-ang/cluster-access/blob/master/example.md) for instructions on setting up
 
+If you see the need to run dep ensure on this repo, you will need to keep a few things in mind.
+ 1. There is a broken bazel rule when vendoring in client-go/apimachinery and you will need to [Comment this out after](https://github.com/scele/apimachinery/commit/15dc092229cda2ca7ead32667e463b53f4a7c138)
+ 2. There is another issue with the BUILD file in vendor/k8s.io/client-go/util/cert to have the go_library not reference testdata.
