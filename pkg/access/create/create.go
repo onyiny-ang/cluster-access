@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
 )
 
@@ -41,6 +42,9 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 		Long:    createLong,
 		Example: createExample,
 		Run: func(createCmd *cobra.Command, args []string) {
+			pathOptions := clientcmd.NewDefaultPathOptions()
+			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
+			opts.UpdateKubeconfig(cmdOut, pathOptions)
 			createRun(opts, createCmd, args)
 		},
 	}
@@ -61,10 +65,6 @@ func (o *createOptions) BindCreate(flags *pflag.FlagSet) {
 }
 
 func createRun(o *createOptions, createCmd *cobra.Command, args []string) {
-	//	if len(args) < 3 {
-	//		fmt.Printf(createCmd.Flags().FlagUsages())
-	//		os.Exit(1)
-	//	}
 
 	fmt.Println(o.User + " " + o.Kubecontext)
 	glog.V(4).Info("Testing some stuff here")

@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/client-go/util/homedir"
 )
 
@@ -35,8 +36,20 @@ func (o *SubcommandOptions) BindCommon(flags *pflag.FlagSet) {
 func (o *SubcommandOptions) UpdateKubeconfig(cmdOut io.Writer,
 	pathOptions *clientcmd.PathOptions) error {
 
+	kubeconfig, err := pathOptions.GetStartingConfig()
+	if err != nil {
+		return err
+	}
+	fmt.Println(kubeconfig)
 	fmt.Fprint(cmdOut, "Updating kubeconfig...")
 	glog.V(4).Info("Updating kubeconfig")
+
+	cluster := clientcmdapi.NewCluster()
+
+	context := clientcmdapi.NewContext()
+	context.Cluster = o.ClusterName
+
+	kubeconfig.Clusters[o.ClusterName] = cluster
 
 	// Pick the first ip/hostname to update the api server endpoint in kubeconfig
 	// and also to give information to user.
