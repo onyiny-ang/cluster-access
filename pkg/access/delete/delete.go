@@ -26,24 +26,23 @@ type deleteOptions struct {
 func NewCmdDelete(cmdOut io.Writer) *cobra.Command {
 	opts := &deleteOptions{}
 
-	cmd := &cobra.Command{
+	deleteCmd := &cobra.Command{
 		Use:     "delete [cluster-name=name]",
 		Short:   "deletes a specified cluster from KUBECONFIG",
 		Long:    deleteLong,
 		Example: deleteExample,
-		Args:    cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(deleteCmd *cobra.Command, args []string) {
 			if len(args) < 1 {
-				fmt.Printf(cmd.Flags().FlagUsages())
+				fmt.Printf(deleteCmd.Flags().FlagUsages())
 				os.Exit(1)
 
 			}
 		},
 	}
-	flags := cmd.Flags()
+	flags := deleteCmd.Flags()
 	opts.BindCommon(flags)
-	cmd.MarkFlagRequired("cluster-context")
-	flags.Parse(os.Args)
+	deleteCmd.MarkPersistentFlagRequired("cluster-name")
 
-	return cmd
+	return deleteCmd
+
 }
