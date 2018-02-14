@@ -6,7 +6,6 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -29,8 +28,6 @@ type SubcommandOptions struct {
 func (o *SubcommandOptions) BindCommon(flags *pflag.FlagSet) {
 	flags.StringVarP(&o.KubeLocation, "kubeconfig", "k", kubeDefault, kubeUsage)
 	flags.StringVarP(&o.ClusterName, "cluster-name", "c", "", clusterUsage)
-	viper.BindPFlag("kubeconfig", flags.Lookup("kubeconfig"))
-	viper.BindPFlag("cluster-name", flags.Lookup("cluster-name"))
 }
 
 // UpdateKubeconfig handles updating the kubeconfig by building up the endpoint
