@@ -12,6 +12,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
 	"k8s.io/cluster-access/pkg/access/util"
+	crclientset "k8s.io/cluster-registry/pkg/client/clientset_generated/clientset"
 )
 
 var (
@@ -52,6 +53,7 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
+			fmt.Println(hostConfig.Cluster.Server)
 			hostClientset, err := client.NewForConfig(hostConfig)
 			if err != nil {
 				glog.Fatalf("error: %v", err)
@@ -85,6 +87,14 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions) error 
 	}
 	if _, exists := config.Contexts[o.Kubecontext]; !exists {
 		glog.V(4).Info("error: context %v not found", o.Kubecontext)
+		return err
+	}
+	clientset, err := crclientset.NewForConfig(config)
+	if err != nil {
+		t.Fatalf("Unexpected error: %v", err)
+	}
+	if cluster, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
+		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
 		return err
 	}
 	return nil
