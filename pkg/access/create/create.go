@@ -3,14 +3,15 @@ package create
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	client "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
+	"k8s.io/cluster-access/pkg/access/util"
 )
 
 var (
@@ -43,6 +44,19 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 		Example: createExample,
 		Run: func(createCmd *cobra.Command, args []string) {
 			pathOptions := clientcmd.NewDefaultPathOptions()
+			err := opts.validateFlags(pathOptions)
+			if err != nil {
+				glog.Fatalf("error: %v", err)
+			}
+			hostConfig, err := util.GetClientConfig(pathOptions, opts.Kubecontext, opts.KubeLocation).ClientConfig()
+			if err != nil {
+				glog.Fatalf("error: %v", err)
+			}
+			hostClientset, err := client.NewForConfig(hostConfig)
+			if err != nil {
+				glog.Fatalf("error: %v", err)
+			}
+			fmt.Println(hostClientset)
 			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
 			opts.UpdateKubeconfig(cmdOut, pathOptions)
 			createRun(opts, createCmd, args)
@@ -64,10 +78,20 @@ func (o *createOptions) BindCreate(flags *pflag.FlagSet) {
 
 }
 
+func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions) error {
+	config, err := pathOptions.GetStartingConfig()
+	if err != nil {
+		return err
+	}
+	if _, exists := config.Contexts[o.Kubecontext]; !exists {
+		glog.V(4).Info("error: context %v not found", o.Kubecontext)
+		return err
+	}
+	return nil
+}
+
 func createRun(o *createOptions, createCmd *cobra.Command, args []string) {
 
-	fmt.Println(o.User + " " + o.Kubecontext)
+	fmt.Println("Don't forget to implement or delete me!")
 	glog.V(4).Info("Testing some stuff here")
-
-	fmt.Println(strings.Join(args, " "))
 }
