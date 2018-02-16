@@ -1,0 +1,18 @@
+package: k8s.io/cluster-access
+import:
+- package: github.com/golang/glog
+- package: github.com/spf13/cobra
+  version: v0.0.1
+- package: github.com/spf13/pflag
+  version: v1.0.0
+- package: k8s.io/client-go
+  version: v6.0.0
+  subpackages:
+  - kubernetes
+  - tools/clientcmd
+  - tools/clientcmd/api
+  - util/homedir
+- package: k8s.io/cluster-registry
+  version: v0.0.3
+  subpackages:
+  - pkg/client/clientset_generated/clientset
