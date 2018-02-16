@@ -8,11 +8,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
 	"k8s.io/cluster-access/pkg/access/util"
 	crclientset "k8s.io/cluster-registry/pkg/client/clientset_generated/clientset"
+	"k8s.io/cluster-registry/pkg/clusterregistry"
+	croptions "k8s.io/cluster-registry/pkg/clusterregistry/options"
 )
 
 var (
@@ -53,12 +56,10 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
-			fmt.Println(hostConfig.Cluster.Server)
 			hostClientset, err := client.NewForConfig(hostConfig)
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
-			fmt.Println(hostClientset)
 			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
 			opts.UpdateKubeconfig(cmdOut, pathOptions)
 			createRun(opts, createCmd, args)
@@ -89,9 +90,11 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions) error 
 		glog.V(4).Info("error: context %v not found", o.Kubecontext)
 		return err
 	}
-	clientset, err := crclientset.NewForConfig(config)
+	s := croptions.NewStandaloneServerRunOptions()
+	server, err := clusterregistry.CreateServer(s)
+	clientset, err := crclientset.NewForConfig(server.LoopbackClientConfig)
 	if err != nil {
-		t.Fatalf("Unexpected error: %v", err)
+		glog.Fatalf("Unexpected error: %v", err)
 	}
 	if cluster, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
 		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
