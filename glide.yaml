@@ -5,6 +5,9 @@ import:
   version: v0.0.1
 - package: github.com/spf13/pflag
   version: v1.0.0
+- package: k8s.io/apimachinery
+  subpackages:
+  - pkg/apis/meta/v1
 - package: k8s.io/client-go
   version: v6.0.0
   subpackages:
@@ -13,6 +16,8 @@ import:
   - tools/clientcmd/api
   - util/homedir
 - package: k8s.io/cluster-registry
-  version: v0.0.3
+  version: ^0.0.3
   subpackages:
   - pkg/client/clientset_generated/clientset
+  - pkg/clusterregistry
+  - pkg/clusterregistry/options

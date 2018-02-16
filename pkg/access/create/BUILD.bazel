@@ -15,7 +15,7 @@ go_library(
         "//vendor/k8s.io/client-go/kubernetes:go_default_library",
         "//vendor/k8s.io/client-go/tools/clientcmd:go_default_library",
         "//vendor/k8s.io/cluster-registry/pkg/client/clientset_generated/clientset:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/client/clusterregistry/options:go_default_library",
         "//vendor/k8s.io/cluster-registry/pkg/clusterregistry:go_default_library",
+        "//vendor/k8s.io/cluster-registry/pkg/clusterregistry/options:go_default_library",
     ],
 )
