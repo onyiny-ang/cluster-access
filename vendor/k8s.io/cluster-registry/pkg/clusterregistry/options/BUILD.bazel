@@ -14,6 +14,7 @@ go_library(
     importpath = "k8s.io/cluster-registry/pkg/clusterregistry/options",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/clusterregistry/authenticator:go_default_library",
         "//vendor/github.com/golang/glog:go_default_library",
         "//vendor/github.com/spf13/pflag:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/authorization/authorizer:go_default_library",
@@ -22,6 +23,5 @@ go_library(
         "//vendor/k8s.io/apiserver/pkg/server/options:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/storage/storagebackend:go_default_library",
         "//vendor/k8s.io/apiserver/plugin/pkg/authorizer/webhook:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/clusterregistry/authenticator:go_default_library",
     ],
 )

@@ -34,8 +34,8 @@ go_library(
     importpath = "k8s.io/cluster-registry/cmd/clusterregistry",
     visibility = ["//visibility:private"],
     deps = [
+        "//pkg/clusterregistry:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/util/logs:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/clusterregistry:go_default_library",
     ],
 )
 

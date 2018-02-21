@@ -6,9 +6,9 @@ go_library(
     importpath = "k8s.io/cluster-registry/pkg/apis/clusterregistry/validation",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/apis/clusterregistry:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/api/validation:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/util/validation/field:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/apis/clusterregistry:go_default_library",
     ],
 )
 
@@ -18,7 +18,7 @@ go_test(
     embed = [":go_default_library"],
     importpath = "k8s.io/cluster-registry/pkg/apis/clusterregistry/validation",
     deps = [
+        "//pkg/apis/clusterregistry:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/apis/meta/v1:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/apis/clusterregistry:go_default_library",
     ],
 )

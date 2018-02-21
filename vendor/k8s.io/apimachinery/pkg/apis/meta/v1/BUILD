@@ -18,8 +18,8 @@ go_test(
         "time_test.go",
         "types_test.go",
     ],
-    embed = [":go_default_library"],
     importpath = "k8s.io/apimachinery/pkg/apis/meta/v1",
+    library = ":go_default_library",
     deps = [
         "//vendor/github.com/ghodss/yaml:go_default_library",
         "//vendor/github.com/json-iterator/go:go_default_library",
@@ -99,7 +99,7 @@ go_test(
     srcs = ["conversion_test.go"],
     importpath = "k8s.io/apimachinery/pkg/apis/meta/v1_test",
     deps = [
-        ":go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/api/equality:go_default_library",
+        "//vendor/k8s.io/apimachinery/pkg/apis/meta/v1:go_default_library",
     ],
 )

@@ -6,11 +6,11 @@ go_library(
     importpath = "k8s.io/cluster-registry/pkg/registry/cluster/etcd",
     visibility = ["//visibility:public"],
     deps = [
+        "//pkg/apis/clusterregistry:go_default_library",
+        "//pkg/registry/cluster:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/runtime:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/registry/generic:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/registry/generic/registry:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/apis/clusterregistry:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/registry/cluster:go_default_library",
     ],
 )
 
@@ -20,12 +20,12 @@ go_test(
     embed = [":go_default_library"],
     importpath = "k8s.io/cluster-registry/pkg/registry/cluster/etcd",
     deps = [
+        "//pkg/apis/clusterregistry:go_default_library",
+        "//pkg/apis/clusterregistry/install:go_default_library",
+        "//pkg/registry/cluster/etcd/registrytestutil:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/apis/meta/v1:go_default_library",
         "//vendor/k8s.io/apimachinery/pkg/runtime:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/registry/generic:go_default_library",
         "//vendor/k8s.io/apiserver/pkg/storage/etcd/testing:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/apis/clusterregistry:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/apis/clusterregistry/install:go_default_library",
-        "//vendor/k8s.io/cluster-registry/pkg/registry/cluster/etcd/registrytestutil:go_default_library",
     ],
 )
