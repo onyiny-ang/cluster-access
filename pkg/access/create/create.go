@@ -10,12 +10,11 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	client "k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
 	"k8s.io/cluster-access/pkg/access/util"
 	crclientset "k8s.io/cluster-registry/pkg/client/clientset_generated/clientset"
-	"k8s.io/cluster-registry/pkg/clusterregistry"
-	croptions "k8s.io/cluster-registry/pkg/clusterregistry/options"
 )
 
 var (
@@ -48,11 +47,11 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 		Example: createExample,
 		Run: func(createCmd *cobra.Command, args []string) {
 			pathOptions := clientcmd.NewDefaultPathOptions()
-			err := opts.validateFlags(pathOptions)
+			hostConfig, err := util.GetClientConfig(pathOptions, opts.Kubecontext, opts.KubeLocation).ClientConfig()
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
-			hostConfig, err := util.GetClientConfig(pathOptions, opts.Kubecontext, opts.KubeLocation).ClientConfig()
+			err = opts.validateFlags(pathOptions, hostConfig)
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
@@ -60,6 +59,7 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
+			fmt.Println("unsure if we need this: %v", hostClientset)
 			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
 			opts.UpdateKubeconfig(cmdOut, pathOptions)
 			createRun(opts, createCmd, args)
@@ -81,7 +81,8 @@ func (o *createOptions) BindCreate(flags *pflag.FlagSet) {
 
 }
 
-func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions) error {
+func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostConfig *rest.Config) error {
+	// ensure context exists
 	config, err := pathOptions.GetStartingConfig()
 	if err != nil {
 		return err
@@ -90,13 +91,13 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions) error 
 		glog.V(4).Info("error: context %v not found", o.Kubecontext)
 		return err
 	}
-	s := croptions.NewStandaloneServerRunOptions()
-	server, err := clusterregistry.CreateServer(s)
-	clientset, err := crclientset.NewForConfig(server.LoopbackClientConfig)
+	//ensure cluster exists
+	//cluster, err := v1alpha1.ClusterregistryV1alpha1Client{}.Clusters().Get(o.ClusterName, metav1.GetOptions{})
+	clientset, err := crclientset.NewForConfig(hostConfig)
 	if err != nil {
 		glog.Fatalf("Unexpected error: %v", err)
 	}
-	if cluster, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
+	if _, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
 		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
 		return err
 	}

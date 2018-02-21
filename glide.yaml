@@ -16,7 +16,7 @@ import:
   - tools/clientcmd/api
   - util/homedir
 - package: k8s.io/cluster-registry
-  version: ^0.0.3
+  version: v0.0.3
   subpackages:
   - pkg/client/clientset_generated/clientset
   - pkg/clusterregistry

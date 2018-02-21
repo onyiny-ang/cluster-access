@@ -18,9 +18,9 @@ go_library(
     importpath = "k8s.io/cluster-registry/cmd/crinit",
     visibility = ["//visibility:private"],
     deps = [
+        "//vendor/k8s.io/apiserver/pkg/util/logs:go_default_library",
+        "//vendor/k8s.io/client-go/plugin/pkg/client/auth:go_default_library",
         "//vendor/k8s.io/cluster-registry/pkg/crinit:go_default_library",
-        "//vendor/k8s.io/cluster-registry/vendor/k8s.io/apiserver/pkg/util/logs:go_default_library",
-        "//vendor/k8s.io/cluster-registry/vendor/k8s.io/client-go/plugin/pkg/client/auth:go_default_library",
     ],
 )
 
