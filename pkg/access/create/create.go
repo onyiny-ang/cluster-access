@@ -91,12 +91,11 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostCo
 		glog.V(4).Info("error: context %v not found", o.Kubecontext)
 		return err
 	}
-	//ensure cluster exists
-	//cluster, err := v1alpha1.ClusterregistryV1alpha1Client{}.Clusters().Get(o.ClusterName, metav1.GetOptions{})
 	clientset, err := crclientset.NewForConfig(hostConfig)
 	if err != nil {
 		glog.Fatalf("Unexpected error: %v", err)
 	}
+	//ensure cluster exists
 	if _, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
 		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
 		return err
