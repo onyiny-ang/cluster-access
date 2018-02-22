@@ -1,14 +1,8 @@
 package options
 
 import (
-	"fmt"
-	"io"
-
-	"github.com/golang/glog"
 	"github.com/spf13/pflag"
 
-	"k8s.io/client-go/tools/clientcmd"
-	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/client-go/util/homedir"
 )
 
@@ -29,47 +23,4 @@ type SubcommandOptions struct {
 func (o *SubcommandOptions) BindCommon(flags *pflag.FlagSet) {
 	flags.StringVarP(&o.KubeLocation, "kubeconfig", "k", kubeDefault, kubeUsage)
 	flags.StringVarP(&o.ClusterName, "cluster-name", "c", "", clusterUsage)
-}
-
-// UpdateKubeconfig handles updating the kubeconfig by building up the endpoint
-// while printing and logging progress.
-func (o *SubcommandOptions) UpdateKubeconfig(cmdOut io.Writer,
-	pathOptions *clientcmd.PathOptions) error {
-
-	kubeconfig, err := pathOptions.GetStartingConfig()
-	if err != nil {
-		return err
-	}
-	fmt.Println(kubeconfig)
-	fmt.Fprint(cmdOut, "Updating kubeconfig...")
-	glog.V(4).Info("Updating kubeconfig")
-
-	cluster := clientcmdapi.NewCluster()
-
-	context := clientcmdapi.NewContext()
-	context.Cluster = o.ClusterName
-
-	kubeconfig.Clusters[o.ClusterName] = cluster
-
-	// Pick the first ip/hostname to update the api server endpoint in kubeconfig
-	// and also to give information to user.
-	// In case of NodePort Service for api server, ips are node external ips.
-
-	// If the service is nodeport, need to append the port to endpoint as it is
-	// non-standard port.
-	//	if o.APIServerServiceType == "" {
-	//		endpoint = endpoint + ":"
-	//	}
-
-	//	err := UpdateKubeconfig(pathOptions, o.Name, endpoint, o.Kubeconfig,
-	//		credentials, o.DryRun)
-
-	//	if err != nil {
-	//		glog.V(4).Infof("Failed to update kubeconfig: %v", err)
-	//		return err
-	//	}
-
-	fmt.Fprintln(cmdOut, " done")
-	glog.V(4).Info("Successfully updated kubeconfig")
-	return nil
 }

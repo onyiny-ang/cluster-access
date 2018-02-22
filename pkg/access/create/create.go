@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/pflag"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	client "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	"k8s.io/cluster-access/pkg/access/options"
 	"k8s.io/cluster-access/pkg/access/util"
 	crclientset "k8s.io/cluster-registry/pkg/client/clientset_generated/clientset"
@@ -55,14 +55,8 @@ func NewCmdCreate(cmdOut io.Writer) *cobra.Command {
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
-			hostClientset, err := client.NewForConfig(hostConfig)
-			if err != nil {
-				glog.Fatalf("error: %v", err)
-			}
-			fmt.Println("unsure if we need this: %v", hostClientset)
 			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
-			opts.UpdateKubeconfig(cmdOut, pathOptions)
-			createRun(opts, hostConfig, createCmd, args)
+			createRun(cmdOut, opts, hostConfig, pathOptions, createCmd, args)
 		},
 	}
 	flags := createCmd.PersistentFlags()
@@ -103,112 +97,58 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostCo
 	return nil
 }
 
-func createRun(o *createOptions, hostConfig *rest.Config, createCmd *cobra.Command, args []string) {
-	clientset, err := crclientset.NewForConfig(hostConfig)
+func createRun(cmdOut io.Writer, o *createOptions, hostConfig *rest.Config, pathOptions *clientcmd.PathOptions, createCmd *cobra.Command, args []string) {
+	crclient, err := crclientset.NewForConfig(hostConfig)
 	//retrieve server address of cluster
-	cluster, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{})
-	svc := cluster.Spec.KubernetesAPIEndpoints.ServerEndpoints[0].ServerAddress
+	crcluster, err := crclient.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{})
+	server := crcluster.Spec.KubernetesAPIEndpoints.ServerEndpoints[0].ServerAddress
 	if err != nil {
 		glog.Fatalf("Unexpected error: %v", err)
 	}
-	//retrieve auth info from context
 
-	//	updateKubeconfig(o)
-	fmt.Println("Don't forget to implement or delete me!")
-	glog.V(4).Info("Testing some stuff here")
+	err = UpdateKubeconfig(cmdOut, o, pathOptions, server)
+	if err != nil {
+		glog.Fatalf("Unexpected error: th kubeconfig update %v", err)
+	}
+
+	fmt.Fprint(cmdOut, "Success")
+	glog.V(4).Info("Cluster added to kubeconfig")
 }
 
-// UpdateKubeconfig handles updating the kubeconfig by building up the endpoint
-// while printing and logging progress.
-//func (o *SubcommandOptions) UpdateKubeconfig(cmdOut io.Writer,
-//   pathOptions *clientcmd.PathOptions, svc *v1.Service, ips, hostnames []string,
-//   credentials *util.Credentials) error {
-//
-//   fmt.Fprint(cmdOut, "Updating kubeconfig...")
-//   glog.V(4).Info("Updating kubeconfig")
-//
-//   // Pick the first ip/hostname to update the api server endpoint in kubeconfig
-//   // and also to give information to user.
-//   // In case of NodePort Service for api server, ips are node external ips.
-//   endpoint := ""
-//   if len(ips) > 0 {
-//   	endpoint = ips[0]
-//   } else if len(hostnames) > 0 {
-//   	endpoint = hostnames[0]
-//   }
-//
-//   // If the service is nodeport, need to append the port to endpoint as it is
-//   // non-standard port.
-//   if o.APIServerServiceType == v1.ServiceTypeNodePort {
-//   	endpoint = endpoint + ":" + strconv.Itoa(int(svc.Spec.Ports[0].NodePort))
-//   }
-//
-//   err := util.UpdateKubeconfig(pathOptions, o.Name, endpoint, o.Kubeconfig,
-//   	credentials, o.DryRun)
-//
-//   if err != nil {
-//   	glog.V(4).Infof("Failed to update kubeconfig: %v", err)
-//   	return err
-//   }
-//
-//   fmt.Fprintln(cmdOut, " done")
-//   glog.V(4).Info("Successfully updated kubeconfig")
-//   return nil
-//
-//
-/// UpdateKubeconfig helper to update the kubeconfig file based on input
-/// parameters.
-//unc UpdateKubeconfig(o *createOptions, pathOptions *clientcmd.PathOptions, name, endpoint,
-//   kubeConfigPath string, credentials *Credentials, dryRun bool) error {
-//   pathOptions.LoadingRules.ExplicitPath = kubeConfigPath
-//   kubeconfig, err := pathOptions.GetStartingConfig()
-//   if err != nil {
-//   	return err
-//   }
-//
-//   // Populate API server endpoint info.
-//   cluster := clientcmdapi.NewCluster()
-//
-//   // Prefix "https" as the URL scheme to endpoint.
-//   if !strings.HasPrefix(endpoint, "https://") {
-//   	endpoint = fmt.Sprintf("https://%s", endpoint)
-//   }
-//
-//   cluster.Server = endpoint
-//   cluster.CertificateAuthorityData = certutil.EncodeCertPEM(credentials.CertEntKeyPairs.CA.Cert)
-//
-//   // Populate credentials.
-//   authInfo := clientcmdapi.NewAuthInfo()
-//   authInfo.ClientCertificateData = certutil.EncodeCertPEM(credentials.CertEntKeyPairs.Admin.Cert)
-//   authInfo.ClientKeyData = certutil.EncodePrivateKeyPEM(credentials.CertEntKeyPairs.Admin.Key)
-//   authInfo.Token = credentials.Token
-//
-//   var httpBasicAuthInfo *clientcmdapi.AuthInfo
-//
-//   if credentials.Password != "" {
-//   	httpBasicAuthInfo = clientcmdapi.NewAuthInfo()
-//   	httpBasicAuthInfo.Password = credentials.Password
-//   	httpBasicAuthInfo.Username = credentials.Username
-//   }
-//
-//   // Populate context.
-//   context := clientcmdapi.NewContext()
-//   context.Cluster = o.ClusterName
-//   context.AuthInfo = name
-//
-//   // Update the config struct with API server endpoint info,
-//   // credentials and context.
-//   kubeconfig.Clusters[name] = cluster
-//   kubeconfig.AuthInfos[name] = authInfo
-//
-//   if httpBasicAuthInfo != nil {
-//   	kubeconfig.AuthInfos[fmt.Sprintf("%s-basic-auth", name)] = httpBasicAuthInfo
-//   }
-//
-//   kubeconfig.Contexts[name] = context
-//
-//   if err := clientcmd.ModifyConfig(pathOptions, *kubeconfig, true); err != nil {
-//   	return err
-//   }
-//   return nil
-//
+func UpdateKubeconfig(cmdOut io.Writer, o *createOptions, pathOptions *clientcmd.PathOptions, server string) error {
+
+	kubeconfig, err := pathOptions.GetStartingConfig()
+	if err != nil {
+		glog.Fatalf("Unexpected error: %v", err)
+	}
+
+	//Populate API server endpoint info.
+	cluster := clientcmdapi.NewCluster()
+	cluster.Server = server
+	cluster.CertificateAuthority = kubeconfig.Clusters[o.Kubecontext].CertificateAuthority
+
+	//Populate Auth data (note this is just for demonstrative purposes and is not meant to   be a reasonable way to retrieve auth info in any other context)
+	authInfo := clientcmdapi.NewAuthInfo()
+	authInfo.ClientCertificate = kubeconfig.AuthInfos[o.Kubecontext].ClientCertificate
+	authInfo.ClientKey = kubeconfig.AuthInfos[o.Kubecontext].ClientKey
+
+	// Populate context.
+	context := clientcmdapi.NewContext()
+	context.Cluster = o.ClusterName
+	context.AuthInfo = o.User
+	context.Namespace = o.Namespace
+
+	fmt.Fprint(cmdOut, "Updating kubeconfig...")
+	glog.V(4).Info("Updating kubeconfig...")
+
+	// Update the config struct with API server endpoint info,
+	// credentials and context.
+	kubeconfig.Clusters[o.ClusterName] = cluster
+	kubeconfig.AuthInfos[o.User] = authInfo
+	kubeconfig.Contexts[o.ClusterName] = context
+
+	if err := clientcmd.ModifyConfig(pathOptions, *kubeconfig, true); err != nil {
+		return err
+	}
+	return nil
+}

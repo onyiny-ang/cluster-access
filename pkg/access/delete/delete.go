@@ -7,7 +7,6 @@ import (
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	client "k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
@@ -48,14 +47,8 @@ func NewCmdDelete(cmdOut io.Writer) *cobra.Command {
 			if err != nil {
 				glog.Fatalf("error: %v", err)
 			}
-			hostClientset, err := client.NewForConfig(hostConfig)
-			if err != nil {
-				glog.Fatalf("error: %v", err)
-			}
-			fmt.Println("unsure if we need this: %v", hostClientset)
 			pathOptions.LoadingRules.ExplicitPath = opts.KubeLocation
-			opts.UpdateKubeconfig(cmdOut, pathOptions)
-			deleteRun(opts, deleteCmd, args)
+			deleteRun(cmdOut, opts, hostConfig, pathOptions, deleteCmd, args)
 		},
 	}
 	flags := deleteCmd.Flags()
@@ -88,8 +81,42 @@ func (o *deleteOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostCo
 	return nil
 }
 
-func deleteRun(opts *deleteOptions, deleteCmd *cobra.Command, args []string) {
-	fmt.Println("Don't forget to implement or delete me!")
-	glog.V(4).Info("Testing some stuff here")
+func deleteRun(cmdOut io.Writer, opts *deleteOptions, hostConfig *rest.Config, pathOptions *clientcmd.PathOptions, deleteCmd *cobra.Command, args []string) {
 
+	errCount := 0
+	fmt.Fprintf(cmdOut, "Delete kubeconfig entry %s...", opts.ClusterName)
+	glog.V(4).Infof("Delete kubeconfig entry %s", opts.ClusterName)
+	kubeconfig, err := pathOptions.GetStartingConfig()
+	if err != nil {
+		glog.Fatalf("Unexpected error: %v", err)
+	}
+	_, ok := kubeconfig.Contexts[opts.ClusterName]
+	if !ok {
+		glog.V(4).Infof("cannot delete context %s, not in %s", opts.ClusterName, opts.KubeLocation)
+		errCount++
+	} else {
+		delete(kubeconfig.Contexts, opts.ClusterName)
+	}
+	_, ok = kubeconfig.Clusters[opts.ClusterName]
+	if !ok {
+		glog.V(4).Infof("cannot delete cluster %s, not in %s", opts.ClusterName, opts.KubeLocation)
+		errCount++
+	} else {
+		delete(kubeconfig.Clusters, opts.ClusterName)
+	}
+
+	_, ok = kubeconfig.AuthInfos[opts.ClusterName]
+	if !ok {
+		glog.V(4).Infof("cannot delete authinfo %s, not in %s", opts.ClusterName, opts.KubeLocation)
+		errCount++
+	} else {
+		delete(kubeconfig.AuthInfos, opts.ClusterName)
+	}
+	if err != nil {
+		glog.V(4).Infof("Failed to delete kubeconfig entry %s: %v", opts.ClusterName, err)
+		glog.Fatalf("Failed to delete kubeconfig entry %s: %v", opts.ClusterName, err)
+	}
+
+	fmt.Fprintln(cmdOut, " done")
+	glog.V(4).Info("Successfully deleted kubeconfig entry")
 }
