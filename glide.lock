@@ -1,5 +1,5 @@
-hash: fe93395c10236167bdd19570ed31ddce5ad5ac8aece99a9c3e61d8fa4514c436
-updated: 2018-02-21T18:05:49.229793254-05:00
+hash: d7eea2966318a9b2ece2c242c7076fb4d7aaee5b2bf1201b167ff944f82cf7da
+updated: 2018-02-23T10:41:37.367841167-05:00
 imports:
 - name: github.com/emicklei/go-restful
   version: ff4f55a206334ef123e4f79bbf348980da81ca46
@@ -21,7 +21,7 @@ imports:
   - proto
   - sortkeys
 - name: github.com/golang/glog
-  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
+  version: 44145f04b68cf362d9c4df2182967c2275eaefed
 - name: github.com/golang/protobuf
   version: 1643683e1b54a9e88ad26d98f81400c8c9d9f4f9
   subpackages:
@@ -145,9 +145,6 @@ imports:
   - pkg/api/errors
   - pkg/api/meta
   - pkg/api/resource
-  - pkg/apis/meta/v1
-  - pkg/apis/meta/v1/unstructured
-  - pkg/apis/meta/v1alpha1
   - pkg/conversion
   - pkg/conversion/queryparams
   - pkg/fields
@@ -181,46 +178,14 @@ imports:
   version: 78700dec6369ba22221b72770783300f143df150
   subpackages:
   - discovery
-  - kubernetes
   - kubernetes/scheme
-  - kubernetes/typed/admissionregistration/v1alpha1
-  - kubernetes/typed/admissionregistration/v1beta1
-  - kubernetes/typed/apps/v1
-  - kubernetes/typed/apps/v1beta1
-  - kubernetes/typed/apps/v1beta2
-  - kubernetes/typed/authentication/v1
-  - kubernetes/typed/authentication/v1beta1
-  - kubernetes/typed/authorization/v1
-  - kubernetes/typed/authorization/v1beta1
-  - kubernetes/typed/autoscaling/v1
-  - kubernetes/typed/autoscaling/v2beta1
-  - kubernetes/typed/batch/v1
-  - kubernetes/typed/batch/v1beta1
-  - kubernetes/typed/batch/v2alpha1
-  - kubernetes/typed/certificates/v1beta1
-  - kubernetes/typed/core/v1
-  - kubernetes/typed/events/v1beta1
-  - kubernetes/typed/extensions/v1beta1
-  - kubernetes/typed/networking/v1
-  - kubernetes/typed/policy/v1beta1
-  - kubernetes/typed/rbac/v1
-  - kubernetes/typed/rbac/v1alpha1
-  - kubernetes/typed/rbac/v1beta1
-  - kubernetes/typed/scheduling/v1alpha1
-  - kubernetes/typed/settings/v1alpha1
-  - kubernetes/typed/storage/v1
-  - kubernetes/typed/storage/v1alpha1
-  - kubernetes/typed/storage/v1beta1
   - pkg/version
-  - rest
-  - rest/watch
   - tools/auth
   - tools/clientcmd
   - tools/clientcmd/api
   - tools/clientcmd/api/latest
   - tools/clientcmd/api/v1
   - tools/metrics
-  - tools/reference
   - transport
   - util/cert
   - util/flowcontrol
@@ -234,8 +199,6 @@ imports:
   - pkg/client/clientset_generated/clientset
   - pkg/client/clientset_generated/clientset/scheme
   - pkg/client/clientset_generated/clientset/typed/clusterregistry/v1alpha1
-  - pkg/clusterregistry
-  - pkg/clusterregistry/options
 - name: k8s.io/kube-openapi
   version: 39a7bf85c140f972372c2a0d1ee40adbf0c8bfe1
   subpackages:
