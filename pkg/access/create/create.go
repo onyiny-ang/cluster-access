@@ -90,7 +90,7 @@ func (o *createOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostCo
 		glog.Fatalf("Unexpected error: %v", err)
 	}
 	//ensure cluster exists
-	if _, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
+	if err := clientset.ClusterregistryV1alpha1().RESTClient().Get().Resource("clusters").Name(o.ClusterName).Do().Error(); err != nil {
 		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
 		return err
 	}

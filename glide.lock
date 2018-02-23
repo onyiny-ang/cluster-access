@@ -1,5 +1,5 @@
-hash: d7eea2966318a9b2ece2c242c7076fb4d7aaee5b2bf1201b167ff944f82cf7da
-updated: 2018-02-23T10:41:37.367841167-05:00
+hash: 24d7d6e0f68320fc7811dc3f70ed493a9199558da36080cad02f375eca2aa681
+updated: 2018-02-23T14:03:10.957670436-05:00
 imports:
 - name: github.com/emicklei/go-restful
   version: ff4f55a206334ef123e4f79bbf348980da81ca46
@@ -145,6 +145,9 @@ imports:
   - pkg/api/errors
   - pkg/api/meta
   - pkg/api/resource
+  - pkg/apis/meta/v1
+  - pkg/apis/meta/v1/unstructured
+  - pkg/apis/meta/v1alpha1
   - pkg/conversion
   - pkg/conversion/queryparams
   - pkg/fields
@@ -180,6 +183,8 @@ imports:
   - discovery
   - kubernetes/scheme
   - pkg/version
+  - rest
+  - rest/watch
   - tools/auth
   - tools/clientcmd
   - tools/clientcmd/api
@@ -192,9 +197,8 @@ imports:
   - util/homedir
   - util/integer
 - name: k8s.io/cluster-registry
-  version: a636176fd5730d0638f1dee29307d6073eb0ba72
+  version: 0b3f6edfb724ed573b310a7f5706c207a8c4364f
   subpackages:
-  - pkg/apis/clusterregistry
   - pkg/apis/clusterregistry/v1alpha1
   - pkg/client/clientset_generated/clientset
   - pkg/client/clientset_generated/clientset/scheme

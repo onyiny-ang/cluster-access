@@ -6,7 +6,6 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/spf13/cobra"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/cluster-access/pkg/access/options"
@@ -74,8 +73,9 @@ func (o *deleteOptions) validateFlags(pathOptions *clientcmd.PathOptions, hostCo
 		glog.Fatalf("Unexpected error: %v", err)
 	}
 	//ensure cluster exists in cluster registry
-	if _, err := clientset.ClusterregistryV1alpha1().Clusters().Get(o.ClusterName, metav1.GetOptions{}); err != nil {
+	if err := clientset.ClusterregistryV1alpha1().RESTClient().Get().Resource("clusters").Name(o.ClusterName).Do().Error(); err != nil {
 		glog.V(4).Info("error: cluster %v not found", o.ClusterName)
+		fmt.Println(err)
 		return err
 	}
 	return nil
