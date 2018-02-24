@@ -4,7 +4,6 @@ load("@io_kubernetes_build//defs:go.bzl", "go_genrule")
 load(
     "@io_bazel_rules_go//go:def.bzl",
     "go_library",
-    "go_test",
 )
 
 go_library(
@@ -46,13 +45,6 @@ $(location //vendor/k8s.io/code-generator/cmd/set-gen) \
     tools = [
         "//vendor/k8s.io/code-generator/cmd/set-gen",
     ],
-)
-
-go_test(
-    name = "go_default_test",
-    srcs = ["set_test.go"],
-    importpath = "k8s.io/apimachinery/pkg/util/sets",
-    library = ":go_default_library",
 )
 
 filegroup(
