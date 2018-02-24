@@ -19,34 +19,6 @@ go_library(
     importpath = "k8s.io/apimachinery/pkg/util/sets",
 )
 
-go_genrule(
-    name = "set-gen",
-    srcs = [
-        "//hack/boilerplate:boilerplate.go.txt",
-    ],
-    outs = [
-        "byte.go",
-        "doc.go",
-        "empty.go",
-        "int.go",
-        "int64.go",
-        "string.go",
-    ],
-    cmd = """
-$(location //vendor/k8s.io/code-generator/cmd/set-gen) \
-    --input-dirs ./vendor/k8s.io/apimachinery/pkg/util/sets/types \
-    --output-base $$(dirname $$(dirname $(location :byte.go))) \
-    --go-header-file $(location //hack/boilerplate:boilerplate.go.txt) \
-    --output-package sets
-    """,
-    go_deps = [
-        "//vendor/k8s.io/apimachinery/pkg/util/sets/types:go_default_library",
-    ],
-    tools = [
-        "//vendor/k8s.io/code-generator/cmd/set-gen",
-    ],
-)
-
 filegroup(
     name = "package-srcs",
     srcs = glob(["**"]),
