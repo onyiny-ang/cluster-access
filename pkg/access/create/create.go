@@ -111,7 +111,7 @@ func createRun(cmdOut io.Writer, o *createOptions, hostConfig *rest.Config, path
 		glog.Fatalf("Unexpected error: th kubeconfig update %v", err)
 	}
 
-	fmt.Fprint(cmdOut, "Success")
+	fmt.Fprint(cmdOut, "Success\n")
 	glog.V(4).Info("Cluster added to kubeconfig")
 }
 
