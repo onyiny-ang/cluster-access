@@ -2,10 +2,24 @@
 
 ####  DESCRIPTION
 A prototype tool to allow a cluster in a cluster registry to be easily added or deleted from the kubeconfig file
-This is not meant to be used in production as there are significant challenges in retrieving accurate authinfo
-for each cluster.
-This prototype uses the context in which the cluster registry and cluster being moved to the kubeconfig file is
-created to retrieve auth info which works as a proof of concept in this particular case.
+This is not meant to be used in production as there are significant challenges in retrieving accurate authinfo for each cluster.
+This prototype uses the context in which the cluster registry and cluster being moved to the kubeconfig file is created to retrieve auth info which works as a proof of concept in this particular case.
+
+#### BUILD:
+
+The cluster access tool is a command line tool that has bash and go implementations. It has been tested with a cluster-registry running in minikube (the `cluster.sh` script deploys the cluster-registry as an aggregated API server in minikube and creates 3 registered test clusters).
+
+##### To run with Golang
+
+Clone the repository into $GOPATH/src/k8s.io/cluster-access.
+
+1.  run `bazel run //:gazelle`
+Note: You must have a recent version of [bazel](https://bazel.io) installed.
+
+2. run `bazel build //cmd/access`
+
+This command will create the access tool in `bazel-bin/cmd/access/.../access`. The tool can be used from there or moved to a more easily accessible location.
+
 
 ##### Usage:
 
