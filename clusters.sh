@@ -13,7 +13,7 @@ SERVER="$(kubectl config view --flatten -o json | jq -r --arg CURRENT_CONTEXT "$
 
 $HOME/crinit aggregated init cr-test --host-cluster-context=${CURRENT_CONTEXT}
 
-kubectl apply -f - --context ${CURRENT_CONTEXT} <<EOF
+kubectl apply -f - --context ${CURRENT_CONTEXT} --validate=false <<EOF
 kind: Cluster
 apiVersion: clusterregistry.k8s.io/v1alpha1
 metadata:
@@ -25,7 +25,7 @@ spec:
         serverAddress: "${SERVER}"
 EOF
 
-kubectl apply -f - --context ${CURRENT_CONTEXT} <<EOF
+kubectl apply -f - --context ${CURRENT_CONTEXT} --validate=false <<EOF
 kind: Cluster
 apiVersion: clusterregistry.k8s.io/v1alpha1
 metadata:
@@ -37,7 +37,7 @@ spec:
         serverAddress: "${SERVER}"
 EOF
 
-kubectl apply -f - --context ${CURRENT_CONTEXT} <<EOF
+kubectl apply -f - --context ${CURRENT_CONTEXT} --validate=false <<EOF
 kind: Cluster
 apiVersion: clusterregistry.k8s.io/v1alpha1
 metadata:
