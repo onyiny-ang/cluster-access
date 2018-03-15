@@ -45,3 +45,7 @@ If you see the need to run dep ensure on this repo, you will need to keep a few 
  1. There is a broken bazel rule when vendoring in client-go/apimachinery and you will need to [Comment this out after](https://github.com/scele/apimachinery/commit/15dc092229cda2ca7ead32667e463b53f4a7c138)
  2. There is another issue with the BUILD file in vendor/k8s.io/client-go/util/cert to have the go_library not reference testdata.
  These are the known issues at this time. There may be others that have not yet been found.
+ 
+ #### Demo of Cluster Access Tool
+ 
+ You can watch a demo of the tool in use [here](https://www.youtube.com/watch?v=V_TIOaVIW8k)
